@@ -34,7 +34,7 @@ public class UserController {
         String token = body.get("token").trim();
 
         userService.logout(token.replace(" ",""));
-        return ResponseEntity.ok("Hello " );
+        return ResponseEntity.ok("Success" );
     }
 
     @GetMapping("/all")
