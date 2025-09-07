@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/register", "/auth/login","/ws/**").permitAll()
                         .anyRequest().authenticated()
@@ -38,7 +38,7 @@ public class SecurityConfig {
 
                         httpSecuritySessionManagementConfigurer
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                ).csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
                 .build();
     }
 

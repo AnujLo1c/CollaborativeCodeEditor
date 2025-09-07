@@ -15,13 +15,15 @@ public class ProjectService {
 
     @Autowired
     ProjectRepo projectRepo;
+@Autowired
+UserService userService;
 
     @Autowired
     ModelMapper modelMapper;
     public String save(ProjectDTO p) {
         System.out.println(p.toString());
-        projectRepo.save(modelMapper.map(p, ProjectEntity.class));
-
+        ProjectEntity projectEntity=projectRepo.save(modelMapper.map(p, ProjectEntity.class));
+userService.addProjectToUsername(projectEntity.getId(),p.getAuthor());
         return  "Project saved successfully";
     }
 

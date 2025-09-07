@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 token = token.trim();
 
-
+            System.out.println(token);
             username = jwtService.extractUserName(token);
             issuedAt = jwtService.extractIssuedAt(token);
         }

@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
+
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -20,15 +24,27 @@ public class ProjectController {
 
     @PostMapping
     public ResponseEntity<String> create(@RequestBody ProjectDTO p) {
-        System.out.println("service called");
+        System.out.println("service called"+p);
         return ResponseEntity.ok(projectService.save(p));
     }
 
     @GetMapping("/{id}")
+//    public Map<String, Object> get(@PathVariable String id) {
     public ProjectDTO get(@PathVariable String id) {
         return projectService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
+
+    //TODO:: make inuse true
+//        return Map.of(
+//                "id", "123",
+//                "name", "Anonymous Project",
+//                "code", "print('hello world')",
+//                "inUse", false
+//        );
+
+
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable String id, @RequestBody ProjectDTO updated) {
@@ -43,7 +59,7 @@ public class ProjectController {
     }
 
         @PostMapping("/execute")
-        public ResponseEntity<String> executeCode(@RequestBody CodeRequest request) {
+        public ResponseEntity<Map<String,String>> executeCode(@RequestBody CodeRequest request) {
             String language = request.getLanguage().toLowerCase();
             String code = request.getCode();
 
@@ -51,7 +67,7 @@ public class ProjectController {
                 Path tempDir = Files.createTempDirectory("codeExec");
                 Path tempFile;
                 ProcessBuilder processBuilder;
-
+Map<String,String> map=new HashMap<>();
                 switch (language) {
                     case "java":
                         tempFile = tempDir.resolve("Main.java");
@@ -107,7 +123,8 @@ public class ProjectController {
                         break;
 
                     default:
-                        return ResponseEntity.badRequest().body("Unsupported language: " + language);
+                        map.put("output","Unsupported language: " + language);
+                        return ResponseEntity.badRequest().body(map);
                 }
 
                 Process runProcess = processBuilder.start();
@@ -117,14 +134,14 @@ public class ProjectController {
                 int exitCode = runProcess.waitFor();
 
                 if (exitCode != 0) {
-                    return ResponseEntity.badRequest().body("Execution Error:\n" + errorOutput);
+                    return ResponseEntity.badRequest().body(Map.of("output","Execution Error:\n" + errorOutput));
                 }
-
-                return ResponseEntity.ok(output);
+map.put("output",output);
+                return ResponseEntity.ok(map);
 
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Execution failed: " + e.getMessage());
+                        .body(Map.of("output","Execution failed: " + e.getMessage()));
             }
         }
 

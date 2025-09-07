@@ -41,8 +41,8 @@ public class JwtService {
                 .claims()
                 .add(claims)
                 .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
+                .issuedAt(new Date(System.currentTimeMillis()+2000))
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 2000))
                 .and()
                 .signWith(getKey())
                 .compact();
@@ -83,8 +83,12 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        // allow 2 seconds clock skew
+        Date expiration = extractExpiration(token);
+        Date now = new Date(System.currentTimeMillis() - 2000); // subtract 2 seconds
+        return expiration.before(now);
     }
+
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../service/auth';
+import { UrlSegment } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,20 +16,29 @@ export class Login {
   constructor(private fb: FormBuilder, private auth: Auth) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(5)]]
     });
+    // console.log(this.loginForm);
   }
 
   onSubmit() {
     console.log(this.loginForm.value);
+    console.log(this.loginForm.valid);
     if (this.loginForm.valid) {
       const username = this.loginForm.get('username')?.value;
       const password = this.loginForm.get('password')?.value;
+console.log(username);
 
       this.auth.login(username, password).subscribe({
         next: (response) => {
           console.log('Login successful:', response);
-          localStorage.setItem('auth_token', response);
+  //         (typeof window !== 'undefined' && localStorage)
+  // ? localStorage.setItem('jwt',response)
+  // : null;
+
+          localStorage.setItem('jwt', response);
+          localStorage.setItem('username', username);
+
           window.location.href = '/project';
         },
         error: (error) => {

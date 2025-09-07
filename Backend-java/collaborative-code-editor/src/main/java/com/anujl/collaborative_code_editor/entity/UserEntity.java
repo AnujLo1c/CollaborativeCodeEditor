@@ -38,6 +38,8 @@ public class UserEntity implements UserDetails {
     private  String email;
     @NotBlank
     private String password;
+    private ArrayList<String> projects;
+    private ArrayList<String> ref_projects;
 
     @Override
     public String toString() {
@@ -90,5 +92,21 @@ public class UserEntity implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public ArrayList<String> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(ArrayList<String> projects) {
+        this.projects = projects;
+    }
+
+    public ArrayList<String> getRef_projects() {
+        return ref_projects;
+    }
+
+    public void setRef_projects(ArrayList<String> ref_projects) {
+        this.ref_projects = ref_projects;
     }
 }
