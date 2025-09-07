@@ -22,7 +22,7 @@ public class ProjectEntity {
     private  String author;
 
     private List<String> codeContent;
-
+    private boolean inUse;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

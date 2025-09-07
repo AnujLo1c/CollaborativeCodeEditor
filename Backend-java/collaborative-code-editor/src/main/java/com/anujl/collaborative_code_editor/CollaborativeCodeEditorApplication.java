@@ -8,7 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Base64;
 
-@SpringBootApplication(scanBasePackages = "com.anujl.collaborative_code_editor")
+@SpringBootApplication( exclude = {
+        org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration.class
+})
 public class CollaborativeCodeEditorApplication implements CommandLineRunner {
 @Autowired
 	UserService userService;
